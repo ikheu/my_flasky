@@ -12,19 +12,17 @@ from flask_migrate import Migrate, MigrateCommand
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'hard to guess string'
-
-bootstrap = Bootstrap(app)
-moment = Moment(app)
-manager = Manager(app)
-
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = \
     'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'hard to guess string'
 
+bootstrap = Bootstrap(app)
+moment = Moment(app)
+manager = Manager(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 manager.add_command('db', MigrateCommand)
