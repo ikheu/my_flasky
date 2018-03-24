@@ -10,20 +10,20 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 
 class Permission:
-    Follow = 0x01
-    COMMENT = 0x02
-    WRITE_ARTICLES = 0x04
-    MODERATE_COMMENTS = 0x08
-    ADMINISTER = 0x80
+    FOLLOW = 0x01             # 关注
+    COMMENT = 0x02            # 评论
+    WRITE_ARTICLES = 0x04     # 写博客
+    MODERATE_COMMENTS = 0x08  # 管理评论
+    ADMINISTER = 0x80         # 管理员权限
 
 class Role(db.Model):
     '''角色'''
     __tablename__ = 'roles'
-    id = db.Column(db.Integer, primary_key=True) # id号
-    name = db.Column(db.String(64), unique=True) # 名字
-    default = db.Column(db.Boolean, default = False, index = True)
-    permissions = db.Column(db.Integer)
-    users = db.relationship('User', backref='role', lazy='dynamic')
+    id = db.Column(db.Integer, primary_key=True)                        # id号
+    name = db.Column(db.String(64), unique=True)                        # 名字
+    default = db.Column(db.Boolean, default = False, index = True)      # 默认权限
+    permissions = db.Column(db.Integer)                                 # 权限
+    users = db.relationship('User', backref='role', lazy='dynamic')     # 用户
     
     def __repr__(self):
         return '<Role %r>' % self.name
@@ -32,10 +32,10 @@ class Role(db.Model):
     def insert_roles():
         '''插入角色'''
         roles = {
-            'User': (Permission.Follow |
+            'User': (Permission.FOLLOW |
                      Permission.COMMENT |
                      Permission.WRITE_ARTICLES, True),
-            'Moderator': (Permission.Follow |
+            'Moderator': (Permission.FOLLOW |
                           Permission.COMMENT |
                           Permission.WRITE_ARTICLES |
                           Permission.MODERATE_COMMENTS, False),
@@ -50,37 +50,86 @@ class Role(db.Model):
             role.default = roles[r][1]
             db.session.add(role)
         db.session.commit()
-            
+
+
+class Follow(db.Model):
+    __tablename__ = 'follows'
+    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'),   # 关注者id
+                            primary_key = True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'),   # 被关注者id
+                            primary_key = True)
+    timestamp = db.Column(db.DateTime, default = datetime.utcnow)    # 时间       
 
         
 class User(UserMixin, db.Model):
     '''用户'''
     __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64), unique=True, index=True)
-    username = db.Column(db.String(64), unique=True, index=True)
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-    password_hash = db.Column(db.String(128))
-    confirmed = db.Column(db.Boolean, default=False)
-    name = db.Column(db.String(64))
-    location = db.Column(db.String(64))
-    about_me = db.Column(db.Text())
-    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
-    last_seen = db.Column(db.DateTime(), default = datetime.utcnow)
-    avatar_hash = db.Column(db.String(32))
-    posts = db.relationship('Post', backref='author', lazy='dynamic')
+    id = db.Column(db.Integer, primary_key=True)                     # 姓名
+    email = db.Column(db.String(64), unique=True, index=True)        # 邮箱
+    username = db.Column(db.String(64), unique=True, index=True)     # 用户名
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))       # 角色id
+    password_hash = db.Column(db.String(128))                        # 密码hash
+    confirmed = db.Column(db.Boolean, default=False)                 # 验证信息
+    name = db.Column(db.String(64))                                  # 姓名
+    location = db.Column(db.String(64))                              # 地区
+    about_me = db.Column(db.Text())                                  # 简介
+    member_since = db.Column(db.DateTime(), default=datetime.utcnow) # 注册时间
+    last_seen = db.Column(db.DateTime(), default = datetime.utcnow)  # 上次登陆时间
+    avatar_hash = db.Column(db.String(32))                           # 头像hash
+    posts = db.relationship('Post', backref='author', lazy='dynamic')# 博文
+    followed = db.relationship('Follow',                             # 关注
+                               foreign_keys=[Follow.follower_id],
+                               backref=db.backref('follower', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
+    followers = db.relationship('Follow',                            # 粉丝
+                               foreign_keys=[Follow.followed_id],
+                               backref=db.backref('followed', lazy='joined'),
+                               lazy='dynamic',
+                               cascade='all, delete-orphan')
+    
+    def follow(self, user):
+        '''关注操作'''
+        if not self.is_following(user):
+            f = Follow(follower=self, followed=user)
+            db.session.add(f)
+        
+    def unfollow(self, user):
+        '''取关操作'''
+        f = self.followed.filter_by(followed_id=user.id).first()
+        if f:
+            db.session.delete(f)
+            
+    def is_following(self, user):
+        '''关注了吗'''
+        return self.followed.filter_by(followed_id=user.id).first() is not None
+    
+    def is_followed_by(self, user):
+        '''被粉了吗'''
+        return self.followers.flter_by(follower_id=user.id).first() is not None
+    
+    @property
+    def followed_posts(self):
+        return Post.query.join(Follow, Follow.followed_id==Post.author_id)\
+                .filter(Follow.follower_id==self.id)
+        
+            
     
     @staticmethod
     def generate_fake(count=100):
+        '''虚拟用户'''
         from sqlalchemy.exc import IntegrityError
         from random import seed
         import forgery_py
-
         seed()
         for i in range(count):
-            u = User(email=forgery_py.internet.email_address(),
-                     username=forgery_py.internet.user_name(True),
-                     password=forgery_py.lorem_ipsum.word(),
+            username_tmp = forgery_py.internet.user_name(True)
+            email_tmp =  forgery_py.internet.email_address()
+            password_tmp = forgery_py.lorem_ipsum.word()
+            print(username_tmp, email_tmp, password_tmp)
+            u = User(email=email_tmp,
+                     username=username_tmp,
+                     password=password_tmp,
                      confirmed=True,
                      name=forgery_py.name.full_name(),
                      location=forgery_py.address.city(),
@@ -148,10 +197,12 @@ class User(UserMixin, db.Model):
         return self.can(Permission.ADMINISTER)
     
     def ping(self):
+        '''时间信息'''
         self.last_seen = datetime.utcnow()
         db.session.add(self)
         
     def gravatar(self, size=100, default='identicon', rating='g'):
+        '''用户头像'''
         if request.is_secure:
             url = 'https://secure.gravatar.com/avatar'
         else:
@@ -160,6 +211,7 @@ class User(UserMixin, db.Model):
             self.email.encode('utf-8')).hexdigest()
         return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(
             url=url, hash=hash, size=size, default=default, rating=rating)
+     
         
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):
@@ -168,11 +220,14 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
+
 login_manager.anonymous_user = AnonymousUser
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 class Post(db.Model):
     '''文章'''
@@ -208,3 +263,23 @@ class Post(db.Model):
             tags=allowed_tags, strip=True))
         
 db.event.listen(Post.body, 'set', Post.on_changed_body)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
