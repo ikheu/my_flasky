@@ -82,7 +82,7 @@ class NameForm(FlaskForm):
 def make_shell_context():
     return dict(app = app, db=db, User=User, Role=Role)
     
-manager.add_command('shell', Shell(make_context = make_shell_context))
+manager.add_command('shell', Shell(make_context = make_shell_context))  #±»µ÷ÓÃ
     
      
 @app.errorhandler(404)
@@ -102,7 +102,7 @@ def index():
             user = User(username=form.name.data)
             db.session.add(user)
             session['known'] = False
-            if 1>2: #app.config['FLASKY_ADMIN']:
+            if app.config['FLASKY_ADMIN']:
                 send_email(app.config['FLASKY_ADMIN'], 'New User',
                            'mail/new_user', user = user)
         else:
