@@ -40,4 +40,4 @@ nosetests.xml
 
 # Virtual environment
 venv
-temp
+tmp
