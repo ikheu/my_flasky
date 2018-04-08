@@ -3,11 +3,11 @@ from .. models import User, Role, Post, Permission, Comment
 from flask import flash, redirect, render_template, url_for ,\
                     request, current_app, abort, make_response
 from flask_login import login_required, current_user
-from .forms import EditProfileForm, EditProfileAdminForm, PostForm, CommentForm
+from .forms import EditProfileForm, EditProfileAdminForm, PostForm, CommentForm, \
+                    ChangeAvatar
 from .. import db
 from ..decorators import admin_required, permission_required
 from flask_sqlalchemy import get_debug_queries
-
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -55,6 +55,7 @@ def user(username):
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
+    #print(os.access('app' + user.real_avatar, os.F_OK))
     return render_template('user.html', user=user, posts=posts,
                            pagination=pagination)
 
@@ -73,6 +74,34 @@ def edit_profile():
     form.location.data = current_user.location
     form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', form=form)
+
+@main.route('/change-avatar', methods=['GET', 'POST'])
+@login_required
+def change_avatar():
+    '''修改头像'''
+    form = ChangeAvatar()
+    if form.validate_on_submit():
+        #文件对象
+        avatar = request.files['avatar']
+        fname = avatar.filename     
+        #存储路径 
+        upload_folder = current_app.config['UPLOAD_FOLDER']      
+        #允许格式
+        allowed_extensions = ['png', 'jpg', 'jpeg', 'gif']      
+        #后缀名
+        fext = fname.rsplit('.',1)[-1] if '.' in fname else ''
+        #判断是否符合要求
+        if fext not in allowed_extensions:   
+            flash('File error.')
+            return redirect(url_for('.user', username=current_user.username))
+        # 路径+用户名+后缀名
+        target = '{}{}.{}'.format(upload_folder, current_user.username, fext)
+        avatar.save(target)
+        current_user.real_avatar = '/static/avatars/{}.{}'.format(current_user.username, fext)
+        db.session.add(current_user)
+        flash('Your avatar has been updated.')
+        return redirect(url_for('.user', username = current_user.username))
+    return render_template('change_avatar.html', form=form)
 
 @main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
 @login_required

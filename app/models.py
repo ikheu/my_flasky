@@ -89,6 +89,8 @@ class User(UserMixin, db.Model):
                                lazy='dynamic',
                                cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic') #评论
+    real_avatar = db.Column(db.String(128), default = None)
+    
     
     def follow(self, user):
         '''关注操作'''
@@ -194,6 +196,46 @@ class User(UserMixin, db.Model):
         self.confirmed = True
         db.session.add(self)
         return True
+    
+    def generate_change_email_token(self, new_email, expiration=3600):
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'change_email': self.id, 'new_email': new_email})
+    
+    def change_email(self, token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return False
+        if data.get('change_email') != self.id:
+            return False
+        new_email = data.get('new_email')
+        if new_email is None:
+            return False
+        if self.query.filter_by(email=new_email).first() is not None:
+            return False
+        self.email = new_email
+        self.avatar_hash = hashlib.md5(
+            self.email.encode('utf-8')).hexdigest()
+        db.session.add(self)
+        return True
+    
+    def generate_reset_token(self, expiration=3600):
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'reset': self.id})
+
+    def reset_password(self, token, new_password):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return False
+        if data.get('reset') != self.id:
+            return False
+        self.password = new_password
+        db.session.add(self)
+        return True
+        
 
     def __repr__(self):
         return '<User %r>' % self.username

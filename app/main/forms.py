@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, SelectField, \
-                    TextAreaField
+                    TextAreaField, FileField
 from wtforms.validators import Required, Length, Email, Regexp
 from ..models import Role, User
 from wtforms import ValidationError
@@ -15,6 +15,10 @@ class EditProfileForm(FlaskForm):
     name = StringField('Real name', validators=[Length(0 ,64)])
     location = StringField('Location', validators = [Length(0, 64)])
     about_me = StringField('About me')
+    submit = SubmitField('Submit')
+    
+class ChangeAvatar(FlaskForm):
+    avatar = FileField('')
     submit = SubmitField('Submit')
     
 class EditProfileAdminForm(FlaskForm):

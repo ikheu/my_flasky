@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="9dfa4ced-4329-4be5-bf47-7cc11c648847" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api_1_0/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api_1_0/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api_1_0/authentication.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api_1_0/authentication.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api_1_0/comments.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api_1_0/comments.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api_1_0/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api_1_0/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api_1_0/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api_1_0/errors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api_1_0/posts.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api_1_0/posts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api_1_0/users.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api_1_0/users.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/auth/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/auth/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/auth/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/auth/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/decorators.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/decorators.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/email.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/email.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/exceptions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/exceptions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/main/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/main/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main/errors.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/main/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/403.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/403.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/404.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/404.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/500.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/500.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/_comments.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/_comments.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/_macros.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/_macros.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/_posts.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/_posts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/auth/change_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/auth/change_password.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/auth/email/confirm.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/auth/email/confirm.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/auth/email/confirm.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/auth/email/confirm.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/auth/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/auth/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/auth/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/auth/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/auth/unconfirmed.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/auth/unconfirmed.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/edit_post.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/edit_post.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/edit_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/edit_profile.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/followers.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/followers.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/mail/new_user.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/mail/new_user.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/mail/new_user.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/mail/new_user.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/moderate.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/moderate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/post.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/post.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/user.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hello.py" beforeDir="false" afterPath="$PROJECT_DIR$/hello.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirement.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_basics.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_basics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_selenium.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_selenium.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_user_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_user_model.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="manage.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/manage.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="110">
+              <caret line="5" column="15" lean-forward="true" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="hello.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/hello.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="88">
+              <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="220">
+              <caret line="10" column="23" lean-forward="true" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="geckodriver.log" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/geckodriver.log">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/config.py" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="4">
+    <option name="x" value="992" />
+    <option name="y" value="24" />
+    <option name="width" value="928" />
+    <option name="height" value="1056" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="flask_my" type="b2602c69:ProjectViewProjectNode" />
+              <item name="flask_my" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="manage" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="flask_my" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/manage.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.manage" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9dfa4ced-4329-4be5-bf47-7cc11c648847" name="Default" comment="" />
+      <created>1523191616285</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1523191616285</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="992" y="24" width="928" height="1056" extended-state="4" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32944915" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Python Console" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/requirement.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="15" column="21" lean-forward="true" selection-start-line="15" selection-start-column="21" selection-end-line="15" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/geckodriver.log">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/hello.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="88">
+          <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="10" column="23" lean-forward="true" selection-start-line="10" selection-start-column="23" selection-end-line="10" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/manage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="110">
+          <caret line="5" column="15" lean-forward="true" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

@@ -20,6 +20,7 @@ class Config:
     FLASKY_COMMENTS_PER_PAGE = 20
     SQLALCHEMY_RECORD_QUERIES = True
     FLASKY_SLOW_DB_QUERY_TIME = 0.5
+    UPLOAD_FOLDER = os.getcwd() + '/app/static/avatars/'
     
     @staticmethod
     def init_app(app):

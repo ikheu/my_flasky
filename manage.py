@@ -59,7 +59,17 @@ def deploy():
     upgrade()
     Role.insert_roles()
     User.add_self_follows()
-
+    
+@manager.command
+def reset_data():
+    from app.models import Role, User, Post
+    from app import db
+    db.drop_all()
+    db.create_all()
+    Role.insert_roles()
+    User.add_self_follows()
+    User.generate_fake(10)
+    Post.generate_fake(10)
     
 if __name__ == '__main__':
     manager.run()
