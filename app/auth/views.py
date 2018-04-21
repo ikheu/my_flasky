@@ -1,4 +1,5 @@
-from flask import render_template, redirect, request, url_for, flash
+from flask import render_template, redirect, request, url_for, flash, \
+    session, make_response
 from flask_login import login_user, logout_user, login_required, \
     current_user
 from . import auth
@@ -7,6 +8,8 @@ from ..models import User
 from .forms import LoginForm, RegistrationForm, ChangePasswordForm, \
         ChangeEmailForm, PasswordResetRequestForm, PasswordResetForm
 from ..email import send_email
+from . get_verify_code import get_verify_code
+from io import BytesIO
 
 
 @auth.before_app_request
@@ -32,11 +35,28 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
+        if session.get('image') != form.verify_code.data:
+            flash('Wrong verify code.')
+            return render_template('auth/login.html', form=form)
         if user is not None and user.verify_password(form.password.data):
             login_user(user, form.remember_me.data)
             return redirect(request.args.get('next') or url_for('main.index'))
         flash('Invalid username or password.')
     return render_template('auth/login.html', form=form)
+
+@auth.route('/code')
+def get_code():
+    image, code = get_verify_code()
+    # 将验证码图片以二进制形式写入在内存中，防止将图片都放在文件夹中，占用大量磁盘
+    buf = BytesIO()
+    image.save(buf, 'jpeg')
+    buf_str = buf.getvalue()
+    # 把二进制作为response发回前端，并设置首部字段
+    response = make_response(buf_str)
+    response.headers['Content-Type'] = 'image/gif'
+    # 将验证码字符串储存在session中
+    session['image'] = code
+    return response
 
 
 @auth.route('/logout')

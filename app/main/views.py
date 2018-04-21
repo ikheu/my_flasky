@@ -4,7 +4,7 @@ from flask import flash, redirect, render_template, url_for ,\
                     request, current_app, abort, make_response
 from flask_login import login_required, current_user
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm, CommentForm, \
-                    ChangeAvatar
+                    ChangeAvatar, EditorForm
 from .. import db
 from ..decorators import admin_required, permission_required
 from flask_sqlalchemy import get_debug_queries
@@ -283,23 +283,19 @@ def after_request(response):
                    query.context))
     return response
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+@main.route('/editor', methods=['GET', 'POST'])
+@login_required
+def editor():
+    form = EditorForm()
+    if request.method == 'POST':
+        if not form.editor.data:
+            flash('Write something.')
+            return render_template('editor.html', form=form)
+        if current_user.can(Permission.WRITE_ARTICLES):
+            print(request.form)
+            post = Post(body_html=request.form['editor'],
+                        author=current_user._get_current_object())
+            db.session.add(post)
+            return redirect(url_for('.index'))
+    return render_template('editor.html', form = form)

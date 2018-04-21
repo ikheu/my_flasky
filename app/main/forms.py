@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, SelectField, \
-                    TextAreaField, FileField
-from wtforms.validators import Required, Length, Email, Regexp
+                    TextAreaField, FileField, FormField
+from wtforms.validators import Required, Length, Email, Regexp, DataRequired
 from ..models import Role, User
 from wtforms import ValidationError
 from flask_pagedown.fields import PageDownField
@@ -16,9 +16,18 @@ class EditProfileForm(FlaskForm):
     location = StringField('Location', validators = [Length(0, 64)])
     about_me = StringField('About me')
     submit = SubmitField('Submit')
+
+class EditorForm(FlaskForm):
+    editor = TextAreaField('', id = 'content')
+    submit = SubmitField('Submit')
+
+    def validate_editor(self, field):
+        print('***************')
+        if not field.data:
+            raise ValidationError('Email already registered.')
     
 class ChangeAvatar(FlaskForm):
-    avatar = FileField('')
+    avatar = FileField('', validators=[Required()])
     submit = SubmitField('Submit')
     
 class EditProfileAdminForm(FlaskForm):

@@ -70,6 +70,14 @@ def reset_data():
     User.add_self_follows()
     User.generate_fake(10)
     Post.generate_fake(10)
+
+@manager.command
+def test_zh():
+    from app.models import User
+    from app import db
+    u = User(username = '我')
+    db.session.add(u)
+    db.session.commit()
     
 if __name__ == '__main__':
     manager.run()

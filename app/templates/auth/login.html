@@ -9,10 +9,11 @@
 </div>
 <div class="col-md-4">
     {{ wtf.quick_form(form) }}
+    <img class="verify_code" src="/auth/code " onclick="this.src='/auth/code?'+ Math.random()">
     <p>
         Forget your password?
         <a href="{{ url_for('auth.password_reset_request') }}">
-        Click here to register
+        Click here to reset
         </a>
     </p>
     <p>
