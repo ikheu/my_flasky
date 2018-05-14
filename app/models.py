@@ -1,13 +1,17 @@
+# -*- coding: utf-8 -*-
+
 import bleach
 import hashlib
 from datetime import datetime
 from markdown import markdown
-from . import db, login_manager
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask import current_app, request, url_for
 from flask_login import UserMixin, AnonymousUserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from werkzeug.security import generate_password_hash, check_password_hash
 from app.exceptions import ValidationError
+from . import db, login_manager
+
+
 
 class Permission:
     '''权限'''
@@ -16,6 +20,7 @@ class Permission:
     WRITE_ARTICLES = 0x04     # 写博客
     MODERATE_COMMENTS = 0x08  # 管理评论
     ADMINISTER = 0x80         # 管理员权限
+
 
 class Role(db.Model):
     '''角色'''
@@ -42,7 +47,7 @@ class Role(db.Model):
                           Permission.MODERATE_COMMENTS, False),
             'Administrator': (0xff, False)
         }
-        
+
         for r in roles:
             role = Role.query.filter_by(name = r).first()
             if role is None:
@@ -54,6 +59,7 @@ class Role(db.Model):
 
 
 class Follow(db.Model):
+    ''' 关注 '''
     __tablename__ = 'follows'
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'),   # 关注者id
                             primary_key = True)
@@ -90,8 +96,24 @@ class User(UserMixin, db.Model):
                                cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic') #评论
     real_avatar = db.Column(db.String(128), default = None)
-    
-    
+
+
+    def __init__(self, **kw):
+        ''' 初始化 '''
+        super().__init__(**kw)
+        if self.role is None:
+            if self.email == current_app.config['FLASKY_ADMIN']:
+                self.role = Role.query.filter_by(permissions = 0xff).first()
+            if self.role is None:
+                self.role = Role.query.filter_by(default=True).first()
+            if self.email is not None and self.avatar_hash is None:
+                self.avatar_hash = hashlib.md5(
+                        self.email.encode('utf-8')).hexdigest()
+        self.followed.append(Follow(followed=self))
+
+    def __repr__(self):
+        return '<User %r>' % self.username
+
     def follow(self, user):
         '''关注操作'''
         if not self.is_following(user):
@@ -114,22 +136,22 @@ class User(UserMixin, db.Model):
     
     @property
     def followed_posts(self):
+        ''' 关注的人的文章 '''
         return Post.query.join(Follow, Follow.followed_id==Post.author_id)\
                 .filter(Follow.follower_id==self.id)
                 
     @staticmethod
     def add_self_follows():
+        ''' 添加自身为关注 '''
         for user in User.query.all():
             if not user.is_following(user):
                 user.follow(user)
                 db.session.add(user)
                 db.session.commit()
-        
-            
-    
+
     @staticmethod
     def generate_fake(count=100):
-        '''虚拟用户'''
+        ''' 测试时产生虚拟用户 '''
         from sqlalchemy.exc import IntegrityError
         from random import seed
         import forgery_py
@@ -152,19 +174,7 @@ class User(UserMixin, db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
-    
-    def __init__(self, **kw):
-        super().__init__(**kw)
-        if self.role is None:
-            if self.email == current_app.config['FLASKY_ADMIN']:
-                self.role = Role.query.filter_by(permissions = 0xff).first()
-            if self.role is None:
-                self.role = Role.query.filter_by(default=True).first()
-            if self.email is not None and self.avatar_hash is None:
-                self.avatar_hash = hashlib.md5(
-                        self.email.encode('utf-8')).hexdigest()
-        self.followed.append(Follow(followed=self))
-    
+
     @property
     def password(self):
         '''获取密码'''
@@ -198,10 +208,12 @@ class User(UserMixin, db.Model):
         return True
     
     def generate_change_email_token(self, new_email, expiration=3600):
+        ''' 生成修改邮箱密令 '''
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'change_email': self.id, 'new_email': new_email})
     
     def change_email(self, token):
+        ''' 修改密码 '''
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
@@ -221,10 +233,12 @@ class User(UserMixin, db.Model):
         return True
     
     def generate_reset_token(self, expiration=3600):
+        ''' 产生重置密令 '''
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'reset': self.id})
 
     def reset_password(self, token, new_password):
+        ''' 重置密码 '''
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
@@ -235,27 +249,23 @@ class User(UserMixin, db.Model):
         self.password = new_password
         db.session.add(self)
         return True
-        
 
-    def __repr__(self):
-        return '<User %r>' % self.username
-            
     def can(self, permissions):
-        '''角色验证'''
+        ''' 权限验证 '''
         return self.role is not None and \
             (self.role.permissions & permissions) == permissions
         
     def is_administrator(self):
-        '''管理员验证'''
+        ''' 管理员验证 '''
         return self.can(Permission.ADMINISTER)
     
     def ping(self):
-        '''时间信息'''
+        ''' 时间信息 '''
         self.last_seen = datetime.utcnow()
         db.session.add(self)
         
     def gravatar(self, size=100, default='identicon', rating='g'):
-        '''用户头像'''
+        ''' 用户头像 '''
         if request.is_secure:
             url = 'https://secure.gravatar.com/avatar'
         else:
@@ -280,6 +290,7 @@ class User(UserMixin, db.Model):
         return User.query.get(data['id'])
     
     def to_json(self):
+        ''' 转化为 json '''
         json_user = {
             'url': url_for('api.get_user',id=self.id,
                            _external=True),
@@ -295,33 +306,37 @@ class User(UserMixin, db.Model):
         
 
 class AnonymousUser(AnonymousUserMixin):
+    ''' 匿名 '''
     def can(self, permissions):
         return False
     
     def is_administrator(self):
         return False
 
-
+# 识别匿名
 login_manager.anonymous_user = AnonymousUser
 
 
 @login_manager.user_loader
 def load_user(user_id):
+    ''' 回调函数, 在上下文环境中导入用户 '''
     return User.query.get(int(user_id))
 
 
 class Post(db.Model):
-    '''文章'''
+    ''' 文章 '''
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
+    title = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
     
     @staticmethod
     def generate_fake(count=100):
+        ''' 测试时产生虚拟文章 '''
         from random import seed, randint
         import forgery_py
 
@@ -337,6 +352,7 @@ class Post(db.Model):
             
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
+        ''' 处理富文本 '''
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
                         'h1', 'h2', 'h3', 'p', 'code']
@@ -346,6 +362,7 @@ class Post(db.Model):
         
         
     def to_json(self):
+        ''' 转化为json '''
         json_post = {
             'url': url_for('api.get_post', id=self.id, _external=True),
             'body': self.body,
@@ -361,12 +378,13 @@ class Post(db.Model):
     
     @staticmethod
     def from_json(json_post):
+        ''' 由 json 生成文章'''
         body = json_post.get('body')
         if body is None or body == '':
             raise ValidationError('post does not have a body')
         return Post(body = body)
         
-    
+# 监听 Post.body 变化
 db.event.listen(Post.body, 'set', Post.on_changed_body)
 
 
@@ -383,6 +401,7 @@ class Comment(db.Model):
     
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
+        ''' 处理评论富文本 '''
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i', 
                         'strong']
         target.body_html = bleach.linkify(bleach.clean(
@@ -390,6 +409,7 @@ class Comment(db.Model):
                 tags=allowed_tags, strip=True))
         
     def to_json(self):
+        ''' 转为成 json '''
         json_comment = {
             'url': url_for('api.get_comment', id=self.id, _external=True),
             'post': url_for('api.get_post', id=self.post_id, _external=True),
@@ -403,29 +423,11 @@ class Comment(db.Model):
 
     @staticmethod
     def from_json(json_comment):
+        ''' 由 json 生成评论 '''
         body = json_comment.get('body')
         if body is None or body == '':
             raise ValidationError('comment does not have a body')
         return Comment(body=body)
 
+# 监听 Comment.body 变化
 db.event.listen(Comment.body, 'set', Comment.on_changed_body)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    

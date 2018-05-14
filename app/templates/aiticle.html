@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Flask - Post{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='prism.css') }}">
+<script src="{{ url_for('static', filename='js/prism.js') }}"></script>
+{% endblock %}
+
+{% block page_content %}
+{% for post in posts %}
+<div class = post-title>
+<h1> {{ post.title }} </h1>
+</div>
+
+<ul class="posts">
+
+    <li class="post">
+
+        <div class="post-content1" >
+            <div class="post-body">
+                {{post.body_html|safe}}
+            </div>
+            <div class="sep20"></div>
+        </div>
+    </li>
+</ul>
+<div class="post-footer">
+                <span class="post-author"><a href="{{ url_for('.user', username=post.author.username) }}">{{ post.author.username }}</a></span>
+                <span>发表于 {{ str(post.timestamp)[:-3] }}</span>
+                <!--<a href="{{ url_for('.post', id=post.id) }}">
+                    <span>文章页</span>
+                </a>-->
+                <a href="{{ url_for('.post', id=post.id) }}#comments">
+                    <span>评论({{ post.comments.count() }})</span>
+                </a>
+                {% if current_user == post.author %}
+                {% if 'edit' in show_tags %}
+                <a href="{{ url_for('.edit', id=post.id) }}">
+                    <span>编辑</span>
+                </a>
+                {% endif %}
+                {% if 'delete' in show_tags %}
+                <a href="{{ url_for('.delete', id=post.id) }}" onclick="return del()">
+                    <span>删除</span>
+                </a>
+                {% endif %}
+                {% elif current_user.is_administrator() %}
+                <a href="{{ url_for('.edit', id=post.id) }}">
+                    <span>编辑[Ad]</span>
+                </a>
+                {% endif %}
+            </div>
+{% endfor %}
+<br>
+{% if current_user.can(Permission.COMMENT) %}
+<div class="comment-form">
+    {{ wtf.quick_form(form) }}
+</div>
+{% endif %}
+{% include '_comments.html' %}
+{% if pagination%}
+<div class="pagination">
+    {{ macros.pagination_widget(pagination, '.post', fragment='#comments', id=posts[0].id) }}
+</div>
+
+{% endif %}
+{% endblock %}

@@ -26,12 +26,14 @@ def get_posts():
         'next': next,
         'count': pagination.total
     })
-    
+
+
 @api.route('/posts/<int:id>')
 def get_post(id):
     post = Post.query.get_or_404(id)
     return jsonify(post.to_json())
-    
+
+
 @api.route('/posts/<int:id>', methods=['PUT'])
 @permission_required(Permission.WRITE_ARTICLES)
 def edit_post(id):
@@ -42,6 +44,7 @@ def edit_post(id):
     post.body = request.json.get('body', post.body)
     db.session.add(post)
     return jsonify(post.to_json())
+
 
 @api.route('/posts/', methods=['POST'])
 @permission_required(Permission.WRITE_ARTICLES)

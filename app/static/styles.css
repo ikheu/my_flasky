@@ -1,6 +1,39 @@
 .verify_code{
 }
 
+.post-title{
+    font-size: 28px;
+    font-weight: 400;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    line-height: 1.8;
+    color: #333;
+
+}
+
+.sep5{
+    height: 20px;
+}
+
+.sep20{
+    height: 20px;
+}
+
+
+.item_title{
+    font-size: 18px;
+    color: #000055;
+}
+
+#test1:hover{
+    position: absolute;
+    filter:alpha(Opacity=50);-moz-opacity:0.5;opacity: 0.5
+}
+
+.test1{
+    position: absolute;
+}
+
 .profile-thumbnail {
     position: absolute;
 }
@@ -22,11 +55,9 @@ div.post-tabs ul.posts {
     border-top: none;
 }
 ul.posts li.post {
-    padding: 8px;
+    padding: 20px;
+    display: block;
     border-bottom: 1px solid #e0e0e0;
-}
-ul.posts li.post:hover {
-    background-color: #f0f0f0;
 }
 div.post-date {
     float: right;
@@ -42,8 +73,13 @@ div.post-content {
     min-height: 48px;
 }
 div.post-footer {
-    text-align: right;
+    text-align: left;
 }
+
+div.post-footer span{
+    color: #555;
+}
+
 ul.comments {
     list-style-type: none;
     padding: 0px;
@@ -74,7 +110,7 @@ div.comment-content {
     min-height: 48px;
 }
 div.comment-form {
-    margin: 16px 0px 16px 32px;
+    margin: 0px 0px 0px 0px;
 }
 div.pagination {
     width: 100%;

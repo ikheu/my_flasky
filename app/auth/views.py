@@ -1,19 +1,24 @@
+# -*- coding: utf-8 -*-
+
+from io import BytesIO
 from flask import render_template, redirect, request, url_for, flash, \
-    session, make_response
+        session, make_response
 from flask_login import login_user, logout_user, login_required, \
-    current_user
+        current_user
 from . import auth
-from .. import db
-from ..models import User
+from . get_verify_code import get_verify_code
 from .forms import LoginForm, RegistrationForm, ChangePasswordForm, \
         ChangeEmailForm, PasswordResetRequestForm, PasswordResetForm
 from ..email import send_email
-from . get_verify_code import get_verify_code
-from io import BytesIO
+from .. import db
+from ..models import User
+
+
 
 
 @auth.before_app_request
 def before_request():
+    ''' 钩子函数, auth 蓝本下每次请求前运行 '''
     if current_user.is_authenticated:
         current_user.ping()
         if not current_user.confirmed \
@@ -25,6 +30,7 @@ def before_request():
         
 @auth.route('/unconfirmed')
 def unconfirmed():
+    ''' 未验证 '''
     if current_user.is_anonymous or current_user.confirmed:
         return redirect(url_for('main.index'))
     return render_template('auth/unconfirmed.html')
@@ -32,6 +38,8 @@ def unconfirmed():
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    ''' 登录 '''
+    # 这里使用了 flask-login 提供的方法, 实际上登录登出功能可通过 session 机制实现
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -44,8 +52,10 @@ def login():
         flash('Invalid username or password.')
     return render_template('auth/login.html', form=form)
 
+
 @auth.route('/code')
 def get_code():
+    ''' 获得登录验证码 '''
     image, code = get_verify_code()
     # 将验证码图片以二进制形式写入在内存中，防止将图片都放在文件夹中，占用大量磁盘
     buf = BytesIO()
@@ -62,6 +72,7 @@ def get_code():
 @auth.route('/logout')
 @login_required
 def logout():
+    ''' 登出 '''
     logout_user()
     flash('You have been logged out.')
     return redirect(url_for('main.index'))
@@ -69,6 +80,7 @@ def logout():
     
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
+    ''' 注册 '''
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(email=form.email.data,
@@ -87,6 +99,7 @@ def register():
 @auth.route('/confirm/<token>')
 @login_required
 def confirm(token):
+    ''' 验证 '''
     if current_user.confirmed:
         return redirect(url_for('main.index'))
     if current_user.confirm(token):
@@ -99,6 +112,7 @@ def confirm(token):
 @auth.route('/confirm')
 @login_required
 def resend_confirmation():
+    ''' 重新验证 '''
     token = current_user.generate_confirmation_token()
     send_email(current_user.email, 'Confirm Your Account',
                 'auth/email/confirm', user = current_user, token = token)
@@ -109,6 +123,7 @@ def resend_confirmation():
 @auth.route('/change-password', methods=['GET', 'POST'])
 @login_required
 def change_password():
+    ''' 修改密码 '''
     form = ChangePasswordForm()
     if form.validate_on_submit():
         if current_user.verify_password(form.old_password.data):
@@ -123,6 +138,7 @@ def change_password():
 @auth.route('/change-email', methods=['GET', 'POST'])
 @login_required
 def change_email_request():
+    ''' 修改邮箱请求 '''
     form = ChangeEmailForm()
     if form.validate_on_submit():
         if current_user.verify_password(form.password.data):
@@ -140,14 +156,17 @@ def change_email_request():
 @auth.route('/change-email/<token>')
 @login_required
 def change_email(token):
+    ''' 修改邮箱 '''
     if current_user.change_email(token):
         flash('Your email address has been updated.')
     else:
         flash('Invalid request.')
     return redirect(url_for('main.index'))
 
+
 @auth.route('/reset', methods=['GET', 'POST'])
 def password_reset_request():
+    ''' 重置密码请求 '''
     if not current_user.is_anonymous:
         return redirect(url_for('main.index'))
     form = PasswordResetRequestForm()
@@ -167,6 +186,7 @@ def password_reset_request():
 
 @auth.route('/reset/<token>', methods=['GET', 'POST'])
 def password_reset(token):
+    ''' 重置密码 '''
     if not current_user.is_anonymous:
         return redirect(url_for('main.index'))
     form = PasswordResetForm()
@@ -180,16 +200,3 @@ def password_reset(token):
         else:
             return redirect(url_for('main.index'))
     return render_template('auth/reset_password.html', form=form)
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
